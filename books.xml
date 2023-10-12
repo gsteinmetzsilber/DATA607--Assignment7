@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+    <table>
+        <row>
+            <header>Title</header>
+            <header>Author</header>
+            <header>Year</header>
+            <header>Publisher</header>
+            <header>Branch</header>
+        </row>
+        <row>
+            <cell>Phenomenology and Philosophy of Mind</cell>
+            <cell>David Woodruff Smith, Amie L. Thomasson </cell>
+            <cell>2005</cell>
+            <cell>Clarendon Press</cell>
+            <cell>Metaphysics</cell>
+        </row>
+    </table>
+</data>
