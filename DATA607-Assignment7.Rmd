@@ -1,0 +1,85 @@
+---
+title: "DATA607-Assignment 7"
+author: "Gavriel Steinmetz-Silber"
+date: "2023-10-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Working with HTML, XML, and JSON in R
+
+In this assignment, I picked three philosophy books. I stored information about each of the three books in three seperate files (HTML, XML, and JSON). Here, I will load the information from each of the three sources into separate R data frames.
+
+### XML
+
+```{r}
+library(tidyverse)
+library(XML)
+library(httr)
+
+temp = GET('http://raw.githubusercontent.com/gsteinmetzsilber/DATA607--Assignment7/main/books.xml')
+data = xmlParse(temp, useInternal = TRUE)
+headers = xpathSApply(data, "//header", xmlValue)
+cells = xpathSApply(data, "//cell", xmlValue)
+
+book1 = data.frame(t(cells))
+colnames(book1) = headers
+```
+
+Here's the resulting dataframe: 
+
+```{r}
+book1
+```
+
+### HTML
+
+```{r}
+library(rvest)
+book2 = read_html('https://raw.githubusercontent.com/gsteinmetzsilber/DATA607--Assignment7/main/books.html') %>% 
+  html_table() %>% 
+  as.data.frame()
+```
+
+And the resulting dataframe is: 
+
+```{r}
+book2
+```
+
+### JSON
+
+```{r}
+library(jsonlite)
+book3 = fromJSON('https://raw.githubusercontent.com/gsteinmetzsilber/DATA607--Assignment7/main/books.json') %>% 
+  as.data.frame()
+```
+
+And the dataframe:
+
+```{r}
+book3
+```
+
+## Discussion
+
+Overall, the dataframes look identical in their structure, other than "Year" being a character (and not an int) in the dataframes stemming from the XML and JSON files. This is due in large part to how I set the tables up, at least subconsciously wanting a similar structure for all. 
+
+While writing the files, especially XML and HTML, was arduous, loading the data was overall easy. I had the hardest time with the XML file, having to clarify the header contents and adjusting the dataframe accordingly. This may have been a function of the libraries that I chose. I had to go back into the XML file structure to write the code correctly. 
+
+Just to illustrate that the dataframes' structures are identical (other than the "Year" type), I'll combine the dataframes into one: 
+
+```{r}
+book1 = book1 %>% 
+  mutate(Year = as.numeric(Year))
+book3 = book3 %>% 
+  mutate(Year = as.numeric(Year))
+
+books = bind_rows(book1, book2, book3)
+
+books
+```
+
